@@ -16,7 +16,9 @@
             "clothes",
             "weather",
             "chores"
-          ]
+          ],
+          "smallIconUri": "https://raw.githubusercontent.com/ricardocastanho/laundry-day-advisor/main/skill-package/assets/en-US_smallIcon.png",
+          "largeIconUri": "https://raw.githubusercontent.com/ricardocastanho/laundry-day-advisor/main/skill-package/assets/en-US_largeIcon.png"
         },
         "pt-BR": {
           "name": "Conselheiro de Lavanderia",
@@ -32,7 +34,9 @@
             "roupa",
             "clima",
             "tarefas"
-          ]
+          ],
+          "smallIconUri": "https://raw.githubusercontent.com/ricardocastanho/laundry-day-advisor/main/skill-package/assets/en-US_smallIcon.png",
+          "largeIconUri": "https://raw.githubusercontent.com/ricardocastanho/laundry-day-advisor/main/skill-package/assets/en-US_largeIcon.png"
         }
       },
       "isAvailableWorldwide": true,
