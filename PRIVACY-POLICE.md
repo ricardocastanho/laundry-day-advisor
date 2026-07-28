@@ -1,12 +1,12 @@
 # Privacy Policy — Laundry Day Advisor
 
-**Effective date:** [insert date you publish this page]
+**Effective date:** 2026-07-28
 
 This Privacy Policy explains what information the Laundry Day Advisor Alexa skill ("the Skill") collects, how it is used, and the choices available to you.
 
 ## 1. Who operates this Skill
 
-The Skill is developed and operated by [Your name or business name], ("we", "us"). If you have questions about this policy, you can contact us at [your contact email].
+The Skill is developed and operated by Ricardo Castanho, ("we", "us"). If you have questions about this policy, you can contact us at ricardosoares632@gmail.com.
 
 ## 2. Information we collect
 
