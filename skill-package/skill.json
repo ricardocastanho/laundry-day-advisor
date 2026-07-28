@@ -47,6 +47,21 @@
         }
       }
     },
-    "manifestVersion": "1.0"
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": true,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://github.com/ricardocastanho/laundry-day-advisor/blob/main/PRIVACY-POLICY.md"
+        },
+        "pt-BR": {
+          "privacyPolicyUrl": "https://github.com/ricardocastanho/laundry-day-advisor/blob/main/PRIVACY-POLICY.md"
+        }
+      }
+    }
   }
 }

@@ -41,7 +41,7 @@ This Skill is not directed at children under 13, and we do not knowingly collect
 ## 7. Your choices
 
 - You can update your saved city at any time by telling the Skill a new city.
-- You can ask us to delete your saved location by contacting us at [your contact email], or by disabling the Skill in the Alexa app, which removes your association with the Skill.
+- You can ask us to delete your saved location by contacting us at ricardosoares632@gmail.com, or by disabling the Skill in the Alexa app, which removes your association with the Skill.
 
 ## 8. Changes to this policy
 
