@@ -1,0 +1,95 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "laundry day advisor",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "SetLocationIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "my city is {CityName}",
+            "my location is {CityName}",
+            "set my city to {CityName}",
+            "set my location to {CityName}",
+            "i live in {CityName}",
+            "use {CityName} as my city",
+            "change my city to {CityName}"
+          ]
+        },
+        {
+          "name": "CheckTodayIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "if today is a good day to wash clothes",
+            "if today is the best day to wash clothes",
+            "is today the best day to do laundry",
+            "is today a good day to do laundry",
+            "should i wash my clothes today",
+            "should i do laundry today",
+            "can i do laundry today",
+            "can i wash clothes today",
+            "is today good for laundry",
+            "is it a good day to wash clothes today",
+            "is today laundry day",
+            "is today a good day to do laundry in {CityName}",
+            "should i wash my clothes today in {CityName}"
+          ]
+        },
+        {
+          "name": "BestDayIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "what's the best day to wash clothes",
+            "what is the best day to wash clothes",
+            "which day should i do laundry",
+            "best laundry day",
+            "when should i wash my clothes this week",
+            "when should i do laundry this week",
+            "what day should i do laundry",
+            "which day is best for laundry",
+            "tell me the best laundry day",
+            "what is the best laundry day this week",
+            "what is the best day to wash clothes in {CityName}",
+            "best laundry day in {CityName}"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}

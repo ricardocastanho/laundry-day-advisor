@@ -1,0 +1,16 @@
+{
+  "name": "laundry-day-advisor",
+  "version": "1.0.0",
+  "description": "Alexa skill that recommends the best day of the week to do laundry based on weather forecast",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no tests specified\""
+  },
+  "dependencies": {
+    "ask-sdk-core": "^2.14.0",
+    "ask-sdk-dynamodb-persistence-adapter": "^2.14.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

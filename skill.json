@@ -1,0 +1,36 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Laundry Day Advisor",
+          "summary": "Tells you whether today is the best day to wash clothes, and which day is best this week.",
+          "description": "Laundry Day Advisor checks the weather forecast for your week and tells you whether today is a good day to do laundry, or which upcoming day is best based on rain chance and wind.",
+          "examplePhrases": [
+            "Alexa, ask Laundry Day Advisor if today is a good day to wash clothes",
+            "Alexa, ask Laundry Day Advisor for the best laundry day",
+            "Alexa, open Laundry Day Advisor"
+          ],
+          "keywords": [
+            "laundry",
+            "clothes",
+            "weather",
+            "chores"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Ask if today is a good day to wash clothes, then ask for the best laundry day this week.",
+      "category": "ORGANIZERS_AND_ASSISTANTS",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda"
+        }
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
