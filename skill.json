@@ -11,15 +11,10 @@
             "Alexa, ask Laundry Day Advisor for the best laundry day",
             "Alexa, open Laundry Day Advisor"
           ],
-          "keywords": [
-            "laundry",
-            "clothes",
-            "weather",
-            "chores"
-          ]
+          "keywords": ["laundry", "clothes", "weather", "chores"]
         }
       },
-      "isAvailableWorldwide": false,
+      "isAvailableWorldwide": true,
       "testingInstructions": "Ask if today is a good day to wash clothes, then ask for the best laundry day this week.",
       "category": "ORGANIZERS_AND_ASSISTANTS",
       "distributionCountries": []

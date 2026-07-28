@@ -11,12 +11,7 @@
             "Alexa, ask Laundry Day Advisor for the best laundry day",
             "Alexa, open Laundry Day Advisor"
           ],
-          "keywords": [
-            "laundry",
-            "clothes",
-            "weather",
-            "chores"
-          ]
+          "keywords": ["laundry", "clothes", "weather", "chores"]
         },
         "pt-BR": {
           "name": "Conselheiro de Lavanderia",
@@ -27,15 +22,10 @@
             "Alexa, pergunte ao Conselheiro de Lavanderia qual é o melhor dia para lavar roupa",
             "Alexa, abra o Conselheiro de Lavanderia"
           ],
-          "keywords": [
-            "lavanderia",
-            "roupa",
-            "clima",
-            "tarefas"
-          ]
+          "keywords": ["lavanderia", "roupa", "clima", "tarefas"]
         }
       },
-      "isAvailableWorldwide": false,
+      "isAvailableWorldwide": true,
       "testingInstructions": "Ask if today is a good day to wash clothes, then ask for the best laundry day this week.",
       "category": "ORGANIZERS_AND_ASSISTANTS",
       "distributionCountries": []
