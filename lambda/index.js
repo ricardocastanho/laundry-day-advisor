@@ -2,15 +2,15 @@ const Alexa = require('ask-sdk-core');
 const { DynamoDbPersistenceAdapter } = require('ask-sdk-dynamodb-persistence-adapter');
 const { getBestLaundryDay, isSameCalendarDay } = require('./laundryAlgorithm');
 const { geocodeCity, resolveLocationForRequest, saveLocation, getSpokenCityName } = require('./locationService');
-
-const NO_LOCATION_MESSAGE = "I don't know your location yet. Please tell me your city, for example say, my city is Chicago, so I can check the weather forecast.";
+const { getStrings } = require('./i18n');
 
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speakOutput = 'Welcome to Laundry Day Advisor. Before we start, tell me your city, for example say, my city is Chicago. Then you can ask me if today is a good day to wash clothes, or ask me for the best laundry day this week.';
+    const strings = getStrings(handlerInput);
+    const speakOutput = strings.welcome;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -24,10 +24,11 @@ const SetLocationIntentHandler = {
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SetLocationIntent';
   },
   async handle(handlerInput) {
+    const strings = getStrings(handlerInput);
     const spokenCityName = getSpokenCityName(handlerInput);
 
     if (!spokenCityName) {
-      const speakOutput = 'What city should I use for your laundry forecast?';
+      const speakOutput = strings.askCity;
       return handlerInput.responseBuilder
         .speak(speakOutput)
         .reprompt(speakOutput)
@@ -35,15 +36,15 @@ const SetLocationIntentHandler = {
     }
 
     try {
-      const geocoded = await geocodeCity(spokenCityName);
+      const geocoded = await geocodeCity(spokenCityName, strings.geocodeLanguage);
       await saveLocation(handlerInput, geocoded);
-      const speakOutput = `Got it. I'll use ${geocoded.resolvedName} for your laundry forecast. Now ask me if today is a good day to wash clothes, or for the best laundry day this week.`;
+      const speakOutput = strings.locationSet(geocoded.resolvedName);
       return handlerInput.responseBuilder
         .speak(speakOutput)
-        .reprompt('Ask me if today is a good day to wash clothes, or for the best laundry day this week.')
+        .reprompt(strings.locationSetReprompt)
         .getResponse();
     } catch (error) {
-      const speakOutput = `I couldn't find a location called ${spokenCityName}. Please try again with a different city name.`;
+      const speakOutput = strings.locationNotFound(spokenCityName);
       return handlerInput.responseBuilder
         .speak(speakOutput)
         .reprompt(speakOutput)
@@ -58,26 +59,27 @@ const CheckTodayIntentHandler = {
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'CheckTodayIntent';
   },
   async handle(handlerInput) {
-    const location = await resolveLocationForRequest(handlerInput);
+    const strings = getStrings(handlerInput);
+    const location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
 
     if (!location) {
       return handlerInput.responseBuilder
-        .speak(NO_LOCATION_MESSAGE)
-        .reprompt(NO_LOCATION_MESSAGE)
+        .speak(strings.noLocation)
+        .reprompt(strings.noLocation)
         .getResponse();
     }
 
     const today = new Date();
-    const bestDay = await getBestLaundryDay(location.latitude, location.longitude);
+    const bestDay = await getBestLaundryDay(location.latitude, location.longitude, strings.dateLocale);
     const todayIsBestDay = isSameCalendarDay(today, bestDay.date);
 
     const speakOutput = todayIsBestDay
-      ? 'Yes! Today is the best day to wash your clothes.'
-      : `No. The best day to wash your clothes this week is ${bestDay.dayName}.`;
+      ? strings.todayYes
+      : strings.todayNo(bestDay.dayName);
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .withSimpleCard('Laundry Day Advisor', speakOutput)
+      .withSimpleCard(strings.cardTitle, speakOutput)
       .getResponse();
   },
 };
@@ -88,21 +90,22 @@ const BestDayIntentHandler = {
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'BestDayIntent';
   },
   async handle(handlerInput) {
-    const location = await resolveLocationForRequest(handlerInput);
+    const strings = getStrings(handlerInput);
+    const location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
 
     if (!location) {
       return handlerInput.responseBuilder
-        .speak(NO_LOCATION_MESSAGE)
-        .reprompt(NO_LOCATION_MESSAGE)
+        .speak(strings.noLocation)
+        .reprompt(strings.noLocation)
         .getResponse();
     }
 
-    const bestDay = await getBestLaundryDay(location.latitude, location.longitude);
-    const speakOutput = `The best day to wash your clothes this week is ${bestDay.dayName}.`;
+    const bestDay = await getBestLaundryDay(location.latitude, location.longitude, strings.dateLocale);
+    const speakOutput = strings.bestDay(bestDay.dayName);
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .withSimpleCard('Laundry Day Advisor', speakOutput)
+      .withSimpleCard(strings.cardTitle, speakOutput)
       .getResponse();
   },
 };
@@ -113,7 +116,7 @@ const HelpIntentHandler = {
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speakOutput = 'You can tell me your city by saying, my city is Chicago. Then ask me if today is a good day to wash clothes, or ask for the best laundry day this week. What would you like to do?';
+    const speakOutput = getStrings(handlerInput).help;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -128,7 +131,7 @@ const CancelAndStopIntentHandler = {
         || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
-    const speakOutput = 'Goodbye! Good luck with your laundry.';
+    const speakOutput = getStrings(handlerInput).goodbye;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .getResponse();
@@ -141,7 +144,7 @@ const FallbackIntentHandler = {
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
   },
   handle(handlerInput) {
-    const speakOutput = "Sorry, I don't know about that. You can tell me your city, ask if today is a good day to wash clothes, or ask for the best laundry day this week.";
+    const speakOutput = getStrings(handlerInput).fallback;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -164,7 +167,7 @@ const IntentReflectorHandler = {
   },
   handle(handlerInput) {
     const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const speakOutput = `You just triggered ${intentName}.`;
+    const speakOutput = getStrings(handlerInput).reflector(intentName);
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .getResponse();
@@ -176,7 +179,7 @@ const ErrorHandler = {
     return true;
   },
   handle(handlerInput, error) {
-    const speakOutput = "Sorry, I couldn't figure out the best laundry day right now. Please try again later.";
+    const speakOutput = getStrings(handlerInput).error;
     console.log(`Error handled: ${error.message}`);
     return handlerInput.responseBuilder
       .speak(speakOutput)

@@ -1,0 +1,89 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "conselheiro de lavanderia",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "SetLocationIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "minha cidade é {CityName}",
+            "minha localização é {CityName}",
+            "defina minha cidade como {CityName}",
+            "defina minha localização como {CityName}",
+            "eu moro em {CityName}",
+            "use {CityName} como minha cidade",
+            "mude minha cidade para {CityName}"
+          ]
+        },
+        {
+          "name": "CheckTodayIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "se hoje é um bom dia para lavar roupa",
+            "se hoje é o melhor dia para lavar roupa",
+            "hoje é o melhor dia para lavar roupa",
+            "hoje é um bom dia para lavar roupa",
+            "eu devo lavar roupa hoje",
+            "posso lavar roupa hoje",
+            "hoje é bom para lavar roupa",
+            "hoje é um bom dia para lavar roupa em {CityName}",
+            "eu devo lavar roupa hoje em {CityName}"
+          ]
+        },
+        {
+          "name": "BestDayIntent",
+          "slots": [
+            {
+              "name": "CityName",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "qual é o melhor dia para lavar roupa",
+            "qual dia eu devo lavar roupa",
+            "melhor dia para lavar roupa",
+            "quando eu devo lavar roupa essa semana",
+            "que dia eu devo lavar roupa",
+            "qual dia é melhor para lavar roupa",
+            "me diga o melhor dia para lavar roupa",
+            "qual é o melhor dia para lavar roupa essa semana",
+            "qual é o melhor dia para lavar roupa em {CityName}",
+            "melhor dia para lavar roupa em {CityName}"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}

@@ -27,15 +27,19 @@ This means the skill scales to any number of users without anyone touching Lambd
 
 ```
 laundry-day-advisor/
-├── skill.json                        # ASK CLI skill manifest
-├── interactionModels/
-│   └── custom/en-US.json             # Intents, slots, and sample utterances
+├── ask-resources.json                # ask-cli v2 project manifest (ties skill-package + lambda together)
+├── skill-package/
+│   ├── skill.json                    # Skill manifest
+│   └── interactionModels/
+│       └── custom/en-US.json         # Intents, slots, and sample utterances
 └── lambda/
     ├── index.js                      # Intent handlers
     ├── laundryAlgorithm.js           # Weather-based best-day logic
     ├── locationService.js            # Geocoding + per-user persistence
     └── package.json
 ```
+
+This is the standard `ask-cli` v2 layout (the same one `ask new` generates), so `ask deploy` recognizes the project without any extra setup. The profile name inside `ask-resources.json` is `default` — if you run `ask configure` with a different profile name, rename that key to match (or run `ask configure` once without `--profile` to create the `default` one).
 
 ## Intents
 

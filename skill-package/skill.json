@@ -1,0 +1,52 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Laundry Day Advisor",
+          "summary": "Tells you whether today is the best day to wash clothes, and which day is best this week.",
+          "description": "Laundry Day Advisor checks the weather forecast for your week and tells you whether today is a good day to do laundry, or which upcoming day is best based on rain chance and wind.",
+          "examplePhrases": [
+            "Alexa, ask Laundry Day Advisor if today is a good day to wash clothes",
+            "Alexa, ask Laundry Day Advisor for the best laundry day",
+            "Alexa, open Laundry Day Advisor"
+          ],
+          "keywords": [
+            "laundry",
+            "clothes",
+            "weather",
+            "chores"
+          ]
+        },
+        "pt-BR": {
+          "name": "Conselheiro de Lavanderia",
+          "summary": "Diz se hoje é o melhor dia para lavar roupa, e qual dia é o melhor da semana.",
+          "description": "O Conselheiro de Lavanderia consulta a previsão do tempo da sua semana e diz se hoje é um bom dia para lavar roupa, ou qual dia da semana é o melhor com base na chance de chuva e no vento.",
+          "examplePhrases": [
+            "Alexa, pergunte ao Conselheiro de Lavanderia se hoje é um bom dia para lavar roupa",
+            "Alexa, pergunte ao Conselheiro de Lavanderia qual é o melhor dia para lavar roupa",
+            "Alexa, abra o Conselheiro de Lavanderia"
+          ],
+          "keywords": [
+            "lavanderia",
+            "roupa",
+            "clima",
+            "tarefas"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Ask if today is a good day to wash clothes, then ask for the best laundry day this week.",
+      "category": "ORGANIZERS_AND_ASSISTANTS",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:us-east-1:659237465288:function:ask-laundrydayadvisor-default-default-1785265416475"
+        }
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}

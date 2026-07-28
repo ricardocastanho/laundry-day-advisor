@@ -1,5 +1,5 @@
-function getWeekdayName(date) {
-  return new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'UTC' }).format(date);
+function getWeekdayName(date, locale = 'en-US') {
+  return new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: 'UTC' }).format(date);
 }
 
 function parseIsoDateAsUtc(isoDate) {
@@ -40,7 +40,7 @@ function pickBestDayFromForecast(forecastDays) {
   }, forecastDays[0]);
 }
 
-async function getBestLaundryDay(latitude, longitude) {
+async function getBestLaundryDay(latitude, longitude, locale = 'en-US') {
   if (latitude === undefined || latitude === null || longitude === undefined || longitude === null) {
     throw new Error('Latitude and longitude are required to calculate the best laundry day');
   }
@@ -49,7 +49,7 @@ async function getBestLaundryDay(latitude, longitude) {
   const bestDay = pickBestDayFromForecast(forecastDays);
 
   return {
-    dayName: getWeekdayName(bestDay.date),
+    dayName: getWeekdayName(bestDay.date, locale),
     date: bestDay.date,
   };
 }

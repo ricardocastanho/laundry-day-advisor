@@ -1,5 +1,5 @@
-async function geocodeCity(cityName) {
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
+async function geocodeCity(cityName, language = 'en') {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=${language}&format=json`;
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -40,11 +40,11 @@ function getSpokenCityName(handlerInput) {
   return slots && slots.CityName && slots.CityName.value ? slots.CityName.value : null;
 }
 
-async function resolveLocationForRequest(handlerInput) {
+async function resolveLocationForRequest(handlerInput, language = 'en') {
   const spokenCityName = getSpokenCityName(handlerInput);
 
   if (spokenCityName) {
-    const geocoded = await geocodeCity(spokenCityName);
+    const geocoded = await geocodeCity(spokenCityName, language);
     await saveLocation(handlerInput, geocoded);
     return geocoded;
   }
