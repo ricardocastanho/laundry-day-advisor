@@ -10,18 +10,18 @@ If the weather API call fails for any reason, the skill does **not** guess or fa
 
 If you had a different rule in mind (lowest utility/energy rates, a fixed day, etc.), tell me and I'll swap `laundryAlgorithm.js` — the intent handlers in `index.js` don't need to change.
 
-## Location: per-user, not a shared environment variable
+## Location: asked for on every request, not saved (for now)
 
-The forecast needs a latitude/longitude, and every user of the skill can be in a different place, so this is **not** a fixed environment variable anymore. Instead:
+The forecast needs a latitude/longitude, and every user of the skill can be in a different place, so this is **not** a fixed environment variable. Instead:
 
-1. **The user tells the skill their city** — "my city is Chicago", or by adding a city while asking, e.g. "is today a good day to do laundry in Chicago".
-2. The skill turns that city name into coordinates using Open-Meteo's free geocoding API (no key needed).
-3. The resolved location is **saved per user** (keyed by the Alexa user ID) in a DynamoDB table, using the standard ASK SDK persistence adapter — so the user only needs to say their city once, and every later "is today a good day" or "best laundry day" reuses it automatically.
-4. **If the skill has no saved location for that user and none was given in the request, it says so and stops** — it will never silently assume a location: *"I don't know your location yet. Please tell me your city, for example say, my city is Chicago, so I can check the weather forecast."*
+1. **The user includes their city in the request** — e.g. "is today a good day to do laundry in Chicago", or "what's the best laundry day in Chicago".
+2. The skill turns that city name into coordinates using Open-Meteo's free geocoding API (no key needed) and uses it for that request only.
+3. **Nothing is persisted between requests** — there's currently no database, so the skill doesn't remember a user's city from one question to the next. Every "is today a good day" or "best laundry day" needs the city included in the same sentence.
+4. **If no city is given in the request, it says so and stops** — it will never silently assume a location: *"Please tell me your city in the same question, for example, is today a good day to do laundry in Chicago."*
 
-This means the skill scales to any number of users without anyone touching Lambda configuration — each user's city lives in their own DynamoDB item.
+The `SetLocationIntent` ("my city is Chicago") is still recognized, but since there's nowhere to save it yet, it just reminds the user to include their city in each question going forward.
 
-> Alexa's Device Address API is a possible future upgrade (real device geolocation instead of an asked-for city), but it requires the user to grant a permission and only returns a street address, which still needs geocoding. Asking for the city by voice was the simpler, friction-free option; happy to swap in device address if you'd rather use that.
+> Two natural follow-ups if you want the city remembered again: re-add a persistence layer (e.g. DynamoDB, keyed by Alexa user ID) so `SetLocationIntent` sticks across requests, or use Alexa's Device Address API for real device geolocation (requires a user-granted permission and still needs geocoding since it only returns a street address). Happy to wire either one in.
 
 ## Project structure
 
@@ -45,19 +45,19 @@ This is the standard `ask-cli` v2 layout (the same one `ask new` generates), so 
 
 | Intent | Sample utterances | Behavior |
 |---|---|---|
-| `SetLocationIntent` | "my city is Chicago", "set my location to Chicago" | Geocodes the city and saves it for that user |
-| `CheckTodayIntent` | "is today the best day to wash clothes", "should I wash my clothes today" | Uses saved (or just-given) location. "Yes! Today is the best day to wash your clothes." / "No. The best day to wash your clothes this week is Wednesday." |
-| `BestDayIntent` | "what's the best day to wash clothes", "best laundry day" | Uses saved (or just-given) location. "The best day to wash your clothes this week is Wednesday." |
+| `SetLocationIntent` | "my city is Chicago", "set my location to Chicago" | Reminds the user that the city isn't saved yet and must be included in each question |
+| `CheckTodayIntent` | "is today a good day to do laundry in Chicago" | Geocodes the given city and answers. "Yes! Today is the best day to wash your clothes." / "No. The best day to wash your clothes this week is Wednesday." |
+| `BestDayIntent` | "what's the best laundry day in Chicago" | Geocodes the given city and answers. "The best day to wash your clothes this week is Wednesday." |
 
-`CheckTodayIntent` and `BestDayIntent` both accept an optional `CityName` slot — if the user mentions a city in the same request ("...in Chicago"), it's geocoded and saved on the spot, so they don't need to call `SetLocationIntent` first.
+`CheckTodayIntent` and `BestDayIntent` both have a `CityName` slot — the user must include a city in the request itself (e.g. "...in Chicago") since nothing is saved between requests.
 
 Built-in intents (`AMAZON.HelpIntent`, `AMAZON.CancelIntent`, `AMAZON.StopIntent`, `AMAZON.FallbackIntent`) are also handled.
 
-## No location saved yet
+## No city given
 
-If a user asks `CheckTodayIntent` or `BestDayIntent` before ever giving a city, the skill responds:
+If a user asks `CheckTodayIntent` or `BestDayIntent` without a city in the same request, the skill responds:
 
-> "I don't know your location yet. Please tell me your city, for example say, my city is Chicago, so I can check the weather forecast."
+> "Please tell me your city in the same question, for example, is today a good day to do laundry in Chicago."
 
 and does not attempt any forecast call.
 
@@ -78,24 +78,18 @@ ask deploy
    - Go to the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) → Create Skill → name it "Laundry Day Advisor" → Custom model → Provision your own.
    - In the JSON Editor, paste the contents of `interactionModels/custom/en-US.json`.
 
-2. **Create the DynamoDB table** (or let the skill create it)
-   - Table name: `LaundryDayAdvisorLocations` (or set `DYNAMODB_TABLE_NAME` to your own name).
-   - Partition key: `id` (String) — this is what `ask-sdk-dynamodb-persistence-adapter` expects.
-   - Alternatively, set the Lambda environment variable `DYNAMODB_CREATE_TABLE=true` once, on first deploy, so the adapter creates the table itself (requires `dynamodb:CreateTable` permission below), then you can remove that variable.
-
-3. **Create the Lambda function**
+2. **Create the Lambda function**
    - AWS Lambda console → Create function → Author from scratch.
    - Runtime: **Node.js 18.x** or later (needed for the built-in `fetch`).
    - Add the Alexa Skills Kit trigger, and paste your Skill ID (from the Developer Console) into it.
    - Zip and upload `lambda/` (after running `npm install` inside it).
-   - Attach an execution role with DynamoDB access: `dynamodb:GetItem`, `dynamodb:PutItem`, `dynamodb:UpdateItem` on the table above (and `dynamodb:CreateTable`/`DescribeTable` if using auto-create).
-   - Optional environment variables: `DYNAMODB_TABLE_NAME`, `DYNAMODB_CREATE_TABLE`.
+   - No extra permissions needed beyond the default Lambda execution role — there's no database to talk to.
 
-4. **Connect them**
+3. **Connect them**
    - Copy the Lambda function's ARN into the Endpoint section of the Developer Console.
 
-5. **Test**
-   - Use the Developer Console's Test tab, or an Echo device: say "my city is Chicago", then ask "is today a good day to wash clothes" or "what's the best laundry day".
+4. **Test**
+   - Use the Developer Console's Test tab, or an Echo device: ask "is today a good day to do laundry in Chicago" or "what's the best laundry day in Chicago".
 
 ## Local install of Lambda dependencies
 

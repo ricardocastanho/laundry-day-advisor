@@ -1,7 +1,6 @@
 const Alexa = require('ask-sdk-core');
-const { DynamoDbPersistenceAdapter } = require('ask-sdk-dynamodb-persistence-adapter');
 const { getBestLaundryDay, isSameCalendarDay } = require('./laundryAlgorithm');
-const { geocodeCity, resolveLocationForRequest, saveLocation, getSpokenCityName } = require('./locationService');
+const { resolveLocationForRequest, getSpokenCityName } = require('./locationService');
 const { getStrings } = require('./i18n');
 
 const LaunchRequestHandler = {
@@ -23,33 +22,13 @@ const SetLocationIntentHandler = {
     return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
       && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SetLocationIntent';
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     const strings = getStrings(handlerInput);
-    const spokenCityName = getSpokenCityName(handlerInput);
-
-    if (!spokenCityName) {
-      const speakOutput = strings.askCity;
-      return handlerInput.responseBuilder
-        .speak(speakOutput)
-        .reprompt(speakOutput)
-        .getResponse();
-    }
-
-    try {
-      const geocoded = await geocodeCity(spokenCityName, strings.geocodeLanguage);
-      await saveLocation(handlerInput, geocoded);
-      const speakOutput = strings.locationSet(geocoded.resolvedName);
-      return handlerInput.responseBuilder
-        .speak(speakOutput)
-        .reprompt(strings.locationSetReprompt)
-        .getResponse();
-    } catch (error) {
-      const speakOutput = strings.locationNotFound(spokenCityName);
-      return handlerInput.responseBuilder
-        .speak(speakOutput)
-        .reprompt(speakOutput)
-        .getResponse();
-    }
+    const speakOutput = strings.noPersistence;
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .reprompt(speakOutput)
+      .getResponse();
   },
 };
 
@@ -60,7 +39,16 @@ const CheckTodayIntentHandler = {
   },
   async handle(handlerInput) {
     const strings = getStrings(handlerInput);
-    const location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
+    let location;
+    try {
+      location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
+    } catch (error) {
+      const speakOutput = strings.locationNotFound(getSpokenCityName(handlerInput));
+      return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .reprompt(speakOutput)
+        .getResponse();
+    }
 
     if (!location) {
       return handlerInput.responseBuilder
@@ -91,7 +79,16 @@ const BestDayIntentHandler = {
   },
   async handle(handlerInput) {
     const strings = getStrings(handlerInput);
-    const location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
+    let location;
+    try {
+      location = await resolveLocationForRequest(handlerInput, strings.geocodeLanguage);
+    } catch (error) {
+      const speakOutput = strings.locationNotFound(getSpokenCityName(handlerInput));
+      return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .reprompt(speakOutput)
+        .getResponse();
+    }
 
     if (!location) {
       return handlerInput.responseBuilder
@@ -201,10 +198,4 @@ exports.handler = Alexa.SkillBuilders.custom()
     IntentReflectorHandler,
   )
   .addErrorHandlers(ErrorHandler)
-  .withPersistenceAdapter(
-    new DynamoDbPersistenceAdapter({
-      tableName: process.env.DYNAMODB_TABLE_NAME || 'LaundryDayAdvisorLocations',
-      createTable: process.env.DYNAMODB_CREATE_TABLE === 'true',
-    }),
-  )
   .lambda();

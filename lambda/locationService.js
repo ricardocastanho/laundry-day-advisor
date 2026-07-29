@@ -22,19 +22,6 @@ async function geocodeCity(cityName, language = 'en') {
   };
 }
 
-async function getSavedLocation(handlerInput) {
-  const persistentAttributes = await handlerInput.attributesManager.getPersistentAttributes();
-  return persistentAttributes.location || null;
-}
-
-async function saveLocation(handlerInput, location) {
-  const attributesManager = handlerInput.attributesManager;
-  const persistentAttributes = await attributesManager.getPersistentAttributes();
-  persistentAttributes.location = location;
-  attributesManager.setPersistentAttributes(persistentAttributes);
-  await attributesManager.savePersistentAttributes();
-}
-
 function getSpokenCityName(handlerInput) {
   const slots = handlerInput.requestEnvelope.request.intent.slots;
   return slots && slots.CityName && slots.CityName.value ? slots.CityName.value : null;
@@ -43,19 +30,15 @@ function getSpokenCityName(handlerInput) {
 async function resolveLocationForRequest(handlerInput, language = 'en') {
   const spokenCityName = getSpokenCityName(handlerInput);
 
-  if (spokenCityName) {
-    const geocoded = await geocodeCity(spokenCityName, language);
-    await saveLocation(handlerInput, geocoded);
-    return geocoded;
+  if (!spokenCityName) {
+    return null;
   }
 
-  return getSavedLocation(handlerInput);
+  return geocodeCity(spokenCityName, language);
 }
 
 module.exports = {
   geocodeCity,
-  getSavedLocation,
-  saveLocation,
   getSpokenCityName,
   resolveLocationForRequest,
 };

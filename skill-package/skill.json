@@ -7,8 +7,8 @@
           "summary": "Tells you whether today is the best day to wash clothes, and which day is best this week.",
           "description": "Laundry Day Advisor checks the weather forecast for your week and tells you whether today is a good day to do laundry, or which upcoming day is best based on rain chance and wind.",
           "examplePhrases": [
-            "Alexa, ask Laundry Day Advisor if today is a good day to wash clothes",
-            "Alexa, ask Laundry Day Advisor for the best laundry day",
+            "Alexa, ask Laundry Day Advisor if today is a good day to do laundry in Chicago",
+            "Alexa, ask Laundry Day Advisor for the best laundry day in Chicago",
             "Alexa, open Laundry Day Advisor"
           ],
           "keywords": [
@@ -25,8 +25,8 @@
           "summary": "Diz se hoje é o melhor dia para lavar roupa, e qual dia é o melhor da semana.",
           "description": "O Conselheiro de Lavanderia consulta a previsão do tempo da sua semana e diz se hoje é um bom dia para lavar roupa, ou qual dia da semana é o melhor com base na chance de chuva e no vento.",
           "examplePhrases": [
-            "Alexa, pergunte ao Conselheiro de Lavanderia se hoje é um bom dia para lavar roupa",
-            "Alexa, pergunte ao Conselheiro de Lavanderia qual é o melhor dia para lavar roupa",
+            "Alexa, pergunte ao Conselheiro de Lavanderia se hoje é um bom dia para lavar roupa em São Paulo",
+            "Alexa, pergunte ao Conselheiro de Lavanderia qual é o melhor dia para lavar roupa em São Paulo",
             "Alexa, abra o Conselheiro de Lavanderia"
           ],
           "keywords": [
@@ -40,7 +40,7 @@
         }
       },
       "isAvailableWorldwide": true,
-      "testingInstructions": "Ask if today is a good day to wash clothes, then ask for the best laundry day this week.",
+      "testingInstructions": "Ask if today is a good day to do laundry in a city, e.g. Chicago, then ask for the best laundry day this week in that city. The city must be included in each request since it isn't saved yet.",
       "category": "ORGANIZERS_AND_ASSISTANTS",
       "distributionCountries": []
     },
